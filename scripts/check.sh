@@ -7,6 +7,8 @@ cd "$(dirname "$0")/.."
 
 swift format lint --strict --recursive --parallel .
 
+# Without the import check, a module can import any other module of the
+# package, even one it doesn't declare as a dependency.
 cd HelloCodexKit
-swift build -Xswiftc -warnings-as-errors
-swift test -Xswiftc -warnings-as-errors
+swift build --explicit-target-dependency-import-check error -Xswiftc -warnings-as-errors
+swift test --explicit-target-dependency-import-check error -Xswiftc -warnings-as-errors
