@@ -6,6 +6,14 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		DA8E89F0306BD8340021FDD8 /* CodexClient in Frameworks */ = {isa = PBXBuildFile; productRef = DA8E89EF306BD8340021FDD8 /* CodexClient */; };
+		DA8E89F2306BD8340021FDD8 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = DA8E89F1306BD8340021FDD8 /* DesignSystem */; };
+		DA8E89F4306BD8340021FDD8 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = DA8E89F3306BD8340021FDD8 /* Storage */; };
+		DA8E89F6306BD8340021FDD8 /* WeeklyLimit in Frameworks */ = {isa = PBXBuildFile; productRef = DA8E89F5306BD8340021FDD8 /* WeeklyLimit */; };
+		DA8E89F8306BD8340021FDD8 /* WeeklyLimitUI in Frameworks */ = {isa = PBXBuildFile; productRef = DA8E89F7306BD8340021FDD8 /* WeeklyLimitUI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		DAF0B0B7306BD36D00E4DD47 /* Hello Codex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hello Codex.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -22,6 +30,11 @@
 		DAF0B0B4306BD36D00E4DD47 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				DA8E89F8306BD8340021FDD8 /* WeeklyLimitUI in Frameworks */,
+				DA8E89F4306BD8340021FDD8 /* Storage in Frameworks */,
+				DA8E89F0306BD8340021FDD8 /* CodexClient in Frameworks */,
+				DA8E89F2306BD8340021FDD8 /* DesignSystem in Frameworks */,
+				DA8E89F6306BD8340021FDD8 /* WeeklyLimit in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -60,6 +73,13 @@
 				DAF0B0B9306BD36D00E4DD47 /* HelloCodex */,
 			);
 			name = HelloCodex;
+			packageProductDependencies = (
+				DA8E89EF306BD8340021FDD8 /* CodexClient */,
+				DA8E89F1306BD8340021FDD8 /* DesignSystem */,
+				DA8E89F3306BD8340021FDD8 /* Storage */,
+				DA8E89F5306BD8340021FDD8 /* WeeklyLimit */,
+				DA8E89F7306BD8340021FDD8 /* WeeklyLimitUI */,
+			);
 			productName = HelloCodex;
 			productReference = DAF0B0B7306BD36D00E4DD47 /* Hello Codex.app */;
 			productType = "com.apple.product-type.application";
@@ -88,6 +108,9 @@
 			);
 			mainGroup = DAF0B0AE306BD36D00E4DD47;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				DA8E89EE306BD8340021FDD8 /* XCLocalSwiftPackageReference "HelloCodexKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DAF0B0B8306BD36D00E4DD47 /* Products */;
 			projectDirPath = "";
@@ -319,6 +342,36 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		DA8E89EE306BD8340021FDD8 /* XCLocalSwiftPackageReference "HelloCodexKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = HelloCodexKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DA8E89EF306BD8340021FDD8 /* CodexClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CodexClient;
+		};
+		DA8E89F1306BD8340021FDD8 /* DesignSystem */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DesignSystem;
+		};
+		DA8E89F3306BD8340021FDD8 /* Storage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Storage;
+		};
+		DA8E89F5306BD8340021FDD8 /* WeeklyLimit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WeeklyLimit;
+		};
+		DA8E89F7306BD8340021FDD8 /* WeeklyLimitUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WeeklyLimitUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DAF0B0AF306BD36D00E4DD47 /* Project object */;
 	validationLevel = 1;

@@ -5,6 +5,14 @@ import PackageDescription
 let package = Package(
     name: "HelloCodexKit",
     platforms: [.macOS(.v14)],
+    // What the app target links; tests use the targets directly.
+    products: [
+        .library(name: "CodexClient", targets: ["CodexClient"]),
+        .library(name: "Storage", targets: ["Storage"]),
+        .library(name: "DesignSystem", targets: ["DesignSystem"]),
+        .library(name: "WeeklyLimit", targets: ["WeeklyLimit"]),
+        .library(name: "WeeklyLimitUI", targets: ["WeeklyLimitUI"]),
+    ],
     targets: [
         // Infrastructure: feature-neutral, depends on nothing.
         .target(name: "CodexClient"),
