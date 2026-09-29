@@ -59,9 +59,11 @@ public struct MonthlyRecordStore<Record: TimestampedRecord>: Sendable {
         directory.appending(path: "\(filePrefix)-\(month.name).jsonl", directoryHint: .notDirectory)
     }
 
+    // Keys are sorted, so the same record is always written the same way.
     // Dates are ISO 8601 in UTC with milliseconds: 2026-09-28T09:16:47.791Z.
     private static var encoder: JSONEncoder {
         let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
         encoder.dateEncodingStrategy = .custom { date, encoder in
             var container = encoder.singleValueContainer()
             try container.encode(date.formatted(Self.timestampFormat))

@@ -43,6 +43,25 @@ struct MonthlyRecordStoreTests {
         }
     }
 
+    @Test func writesTheKeysInTheSameOrderEveryTime() throws {
+        struct Unordered: TimestampedRecord {
+            let zone: String
+            let recordedAt: Date
+            let amount: Int
+        }
+        let directory = FileManager.default.temporaryDirectory
+            .appending(path: "hellocodex-storage-\(UUID().uuidString)", directoryHint: .isDirectory)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let store = MonthlyRecordStore<Unordered>(directory: directory, filePrefix: "readings")
+
+        try store.append(Unordered(zone: "a", recordedAt: date("2026-09-28T09:00:00Z"), amount: 1))
+
+        let contents = try String(
+            contentsOf: directory.appending(path: "readings-2026-09.jsonl"), encoding: .utf8)
+        #expect(
+            contents == #"{"amount":1,"recordedAt":"2026-09-28T09:00:00.000Z","zone":"a"}"# + "\n")
+    }
+
     @Test func readsTimestampsWrittenByEarlierVersions() throws {
         try withStore { store, directory in
             try FileManager.default.createDirectory(
