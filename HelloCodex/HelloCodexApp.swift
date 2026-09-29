@@ -16,6 +16,9 @@ struct HelloCodexApp: App {
         Window("Hello Codex", id: MainWindow.id) {
             MainWindow()
         }
+        // SwiftUI restores the window's size and position itself; the default
+        // size fits the design's 760 wide.
+        .defaultSize(width: 760, height: 900)
 
         MenuBarExtra {
             MenuBarContent()
