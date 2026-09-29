@@ -17,7 +17,7 @@ let package = Package(
         // Infrastructure: feature-neutral, depends on nothing.
         .target(name: "CodexClient"),
         .target(name: "Storage"),
-        .target(name: "DesignSystem"),
+        .target(name: "DesignSystem", resources: [.process("Colors.xcassets")]),
 
         // Features: built on the infrastructure, never on each other.
         .target(name: "WeeklyLimit", dependencies: ["CodexClient", "Storage"]),
