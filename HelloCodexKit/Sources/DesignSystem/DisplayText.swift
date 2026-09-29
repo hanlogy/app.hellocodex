@@ -1,7 +1,7 @@
 import Foundation
 
-/// Numbers, durations, and dates as the app shows them. Dates are in British
-/// English, as in the design: "Fri 2 Oct, 09:00".
+/// Numbers, durations, and dates as the app shows them. Dates follow the Mac's
+/// region settings, including its 12- or 24-hour clock.
 public enum DisplayText {
     /// The minus sign, not a hyphen.
     public static let minus = "\u{2212}"
@@ -24,38 +24,40 @@ public enum DisplayText {
         return days > 0 ? "\(days)d \(hours)h" : "\(hours)h \(minutes % 60)m"
     }
 
-    /// "Fri 2 Oct, 09:00".
-    public static func dateTime(_ date: Date, calendar: Calendar = .current) -> String {
-        let components = calendar.dateComponents([.day, .month], from: date)
-        let month = formatter("MMM", calendar).string(from: date)
-        return "\(weekday(date, calendar: calendar)) \(components.day ?? 0) \(month), "
-            + clockTime(date, calendar: calendar)
+    /// The reset date and time, in the Mac's region format: "Fri 2 Oct, 09:00"
+    /// in British English, "Fri, Oct 2, 9:00 AM" in US English.
+    public static func dateTime(
+        _ date: Date, locale: Locale = .autoupdatingCurrent,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> String {
+        // Formatted as two parts, because the regional formats join a date and a
+        // time with "at", and the design uses a comma.
+        let style = style(locale, calendar)
+        let day = date.formatted(style.weekday(.abbreviated).day().month(.abbreviated))
+        return "\(day), \(date.formatted(style.hour().minute()))"
     }
 
-    /// "Wed 04:40", rounded to 10 minutes, for times that are only estimates.
-    public static func estimatedTime(_ date: Date, calendar: Calendar = .current) -> String {
+    /// A day and time that's only an estimate, rounded to 10 minutes: "Wed 04:40"
+    /// in British English, "Wed 4:40 AM" in US English.
+    public static func estimatedTime(
+        _ date: Date, locale: Locale = .autoupdatingCurrent,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> String {
         let step: TimeInterval = 10 * 60
         let rounded = Date(
             timeIntervalSince1970: (date.timeIntervalSince1970 / step).rounded() * step)
-        return "\(weekday(rounded, calendar: calendar)) \(clockTime(rounded, calendar: calendar))"
+        return rounded.formatted(style(locale, calendar).weekday(.abbreviated).hour().minute())
     }
 
     /// "Fri".
-    public static func weekday(_ date: Date, calendar: Calendar = .current) -> String {
-        formatter("EEE", calendar).string(from: date)
+    public static func weekday(
+        _ date: Date, locale: Locale = .autoupdatingCurrent,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> String {
+        date.formatted(style(locale, calendar).weekday(.abbreviated))
     }
 
-    /// "09:00".
-    private static func clockTime(_ date: Date, calendar: Calendar) -> String {
-        formatter("HH:mm", calendar).string(from: date)
-    }
-
-    private static func formatter(_ format: String, _ calendar: Calendar) -> DateFormatter {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_GB")
-        formatter.calendar = calendar
-        formatter.timeZone = calendar.timeZone
-        formatter.dateFormat = format
-        return formatter
+    private static func style(_ locale: Locale, _ calendar: Calendar) -> Date.FormatStyle {
+        Date.FormatStyle(locale: locale, calendar: calendar, timeZone: calendar.timeZone)
     }
 }

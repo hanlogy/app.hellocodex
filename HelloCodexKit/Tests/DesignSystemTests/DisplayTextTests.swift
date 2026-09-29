@@ -9,6 +9,9 @@ private let stockholm: Calendar = {
     return calendar
 }()
 
+private let british = Locale(identifier: "en_GB")
+private let american = Locale(identifier: "en_US")
+
 private func local(_ year: Int, _ month: Int, _ day: Int, _ hour: Int, _ minute: Int = 0) -> Date {
     stockholm.date(
         from: DateComponents(year: year, month: month, day: day, hour: hour, minute: minute))!
@@ -38,14 +41,21 @@ struct DisplayTextTests {
         #expect(DisplayText.duration(interval) == text)
     }
 
-    @Test func formatsDatesLikeTheDesign() {
+    @Test func formatsTheResetInBritishEnglishLikeTheDesign() {
         #expect(
-            DisplayText.dateTime(local(2026, 10, 2, 9), calendar: stockholm) == "Fri 2 Oct, 09:00")
+            DisplayText.dateTime(local(2026, 10, 2, 9), locale: british, calendar: stockholm)
+                == "Fri 2 Oct, 09:00")
     }
 
-    @Test func abbreviatesEveryMonthToThreeLettersLikeTheDesign() {
+    @Test func formatsTheResetInUSEnglish() {
+        #expect(
+            DisplayText.dateTime(local(2026, 10, 2, 9), locale: american, calendar: stockholm)
+                == "Fri, Oct 2, 9:00\u{202F}AM")
+    }
+
+    @Test func abbreviatesEveryMonthToThreeLettersInBritishEnglish() {
         let months = (1...12).map {
-            DisplayText.dateTime(local(2026, $0, 15, 12), calendar: stockholm)
+            DisplayText.dateTime(local(2026, $0, 15, 12), locale: british, calendar: stockholm)
         }
 
         #expect(
@@ -57,14 +67,20 @@ struct DisplayTextTests {
 
     @Test func roundsEstimatedTimesToTenMinutes() {
         #expect(
-            DisplayText.estimatedTime(local(2026, 9, 30, 4, 43), calendar: stockholm) == "Wed 04:40"
-        )
+            DisplayText.estimatedTime(
+                local(2026, 9, 30, 4, 43), locale: british, calendar: stockholm) == "Wed 04:40")
         #expect(
-            DisplayText.estimatedTime(local(2026, 9, 30, 23, 56), calendar: stockholm)
-                == "Thu 00:00")
+            DisplayText.estimatedTime(
+                local(2026, 9, 30, 23, 56), locale: british, calendar: stockholm) == "Thu 00:00")
+        #expect(
+            DisplayText.estimatedTime(
+                local(2026, 9, 30, 4, 43), locale: american, calendar: stockholm)
+                == "Wed 4:40\u{202F}AM")
     }
 
-    @Test func namesTheWeekdayInEnglish() {
-        #expect(DisplayText.weekday(local(2026, 9, 26, 12), calendar: stockholm) == "Sat")
+    @Test func namesTheWeekday() {
+        #expect(
+            DisplayText.weekday(local(2026, 9, 26, 12), locale: british, calendar: stockholm)
+                == "Sat")
     }
 }
