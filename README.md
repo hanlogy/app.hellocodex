@@ -22,3 +22,13 @@ This checks formatting with `swift format lint --strict`, builds and tests the
 package, and builds the app, failing on any warning. Pull request CI runs the
 same script from a clean build. Run `swift format --in-place --recursive .` to
 fix formatting.
+
+## Install
+
+```sh
+scripts/install.sh
+```
+
+This builds a release signed with Developer ID, quits the installed app, moves
+it to the Trash, installs the new build in `/Applications`, and opens it. It
+needs the Developer ID Application certificate for Hanlogy AB in the keychain.
