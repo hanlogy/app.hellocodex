@@ -2,7 +2,7 @@ import Foundation
 import Storage
 
 /// The stored readings of one account's weekly limit.
-struct WeeklyLimitHistory {
+struct WeeklyLimitHistory: Sendable {
     /// Unchanged readings are kept this far apart. Those samples show that
     /// recording continued; a longer gap shows it stopped.
     private static let unchangedSampleInterval: TimeInterval = 5 * 60
