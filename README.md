@@ -18,6 +18,7 @@ It's written in Swift with SwiftUI, and has no third-party dependencies.
 scripts/check.sh
 ```
 
-This checks formatting with `swift format lint --strict`, builds with warnings
-as errors, and runs the tests. Pull request CI runs the same script. Run
-`swift format --in-place --recursive .` to fix formatting.
+This checks formatting with `swift format lint --strict`, builds and tests the
+package, and builds the app, failing on any warning. Pull request CI runs the
+same script from a clean build. Run `swift format --in-place --recursive .` to
+fix formatting.
