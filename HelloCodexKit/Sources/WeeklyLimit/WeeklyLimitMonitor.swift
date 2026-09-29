@@ -1,7 +1,13 @@
 import CodexClient
 import Foundation
+import OSLog
 import Observation
 import Storage
+
+// The running app's identifier, so the messages can be found under it in
+// Console.
+private let logger = Logger(
+    subsystem: Bundle.main.bundleIdentifier ?? "HelloCodexKit", category: "WeeklyLimit")
 
 /// Keeps the weekly limit and the week's summary up to date: reads the limit
 /// from Codex whenever it connects, when the limits or the account change, and
@@ -123,15 +129,23 @@ public final class WeeklyLimitMonitor {
     }
 
     private func read() async {
-        guard let rateLimits = try? await codex.readRateLimits() else {
+        let rateLimits: RateLimits
+        do {
+            rateLimits = try await codex.readRateLimits()
+        } catch {
             // Keep showing the last reading until Codex answers again.
+            logger.error("Couldn't read the rate limits: \(error)")
             return
         }
         let limit = WeeklyLimit(rateLimits: rateLimits)
         let time = now()
         let history = await accountHistory(accountID: rateLimits.accountId)
         if let limit, let history {
-            try? history.record(limit, at: time)
+            do {
+                try history.record(limit, at: time)
+            } catch {
+                logger.error("Couldn't record the weekly limit: \(error)")
+            }
         }
         self.limit = limit
         summary = limit.flatMap { summarize($0, history: history, at: time) }
@@ -141,8 +155,12 @@ public final class WeeklyLimitMonitor {
     /// that is. The email is only asked for when the ID is missing.
     private func accountHistory(accountID: String?) async -> WeeklyLimitHistory? {
         var key = AccountFolderKey(accountID: accountID, email: nil)
-        if key == nil, let account = try? await codex.readAccount() {
-            key = AccountFolderKey(accountID: nil, email: account.email)
+        if key == nil {
+            do {
+                key = AccountFolderKey(accountID: nil, email: try await codex.readAccount()?.email)
+            } catch {
+                logger.error("Couldn't read the Codex account: \(error)")
+            }
         }
         return key.map {
             WeeklyLimitHistory(accountDirectory: dataDirectory.accountDirectory(for: $0))
@@ -158,7 +176,12 @@ public final class WeeklyLimitMonitor {
             return nil
         }
         let week = Week(endingAt: resetsAt)
-        let records = (try? history?.records(from: min(week.startsAt, time), to: time)) ?? []
+        var records: [WeeklyLimitRecord] = []
+        do {
+            records = try history?.records(from: min(week.startsAt, time), to: time) ?? []
+        } catch {
+            logger.error("Couldn't read the recorded weekly limit: \(error)")
+        }
         return WeeklySummary(limit: limit, records: records, now: time, calendar: calendar)
     }
 }
