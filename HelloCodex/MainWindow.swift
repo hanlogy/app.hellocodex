@@ -19,6 +19,7 @@ struct MainWindow: View {
                     WeeklyLimitHeader(summary: summary)
                     WeeklyLimitChart(summary: summary)
                     WeeklyLimitStats(summary: summary)
+                    WeeklyLimitDailyUsage(summary: summary)
                 }
             }
             .padding(EdgeInsets(top: 20, leading: 40, bottom: 36, trailing: 40))
