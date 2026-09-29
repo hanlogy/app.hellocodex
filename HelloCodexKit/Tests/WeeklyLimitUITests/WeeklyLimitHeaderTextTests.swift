@@ -1,3 +1,4 @@
+import DesignSystem
 import Foundation
 import Testing
 import WeeklyLimit
@@ -21,13 +22,12 @@ private func summary(percentLeft: Double) -> WeeklySummary {
 }
 
 private func text(
-    percentLeft: Double, now: Date = resetsAt.addingTimeInterval(-(4 * 24 + 19.5) * 3600)
-)
-    -> WeeklyLimitHeaderText
-{
+    percentLeft: Double, variant: Variant = .full,
+    now: Date = resetsAt.addingTimeInterval(-(4 * 24 + 19.5) * 3600)
+) -> WeeklyLimitHeaderText {
     WeeklyLimitHeaderText(
-        summary: summary(percentLeft: percentLeft), now: now, locale: Locale(identifier: "en_GB"),
-        calendar: stockholm)
+        summary: summary(percentLeft: percentLeft), variant: variant, now: now,
+        locale: Locale(identifier: "en_GB"), calendar: stockholm)
 }
 
 struct WeeklyLimitHeaderTextTests {
@@ -38,6 +38,13 @@ struct WeeklyLimitHeaderTextTests {
         #expect(header.caption == "left this week")
         #expect(header.timeUntilReset == "4d 19h")
         #expect(header.resetsAt == "until reset · Fri 2 Oct, 09:00")
+    }
+
+    @Test func leavesOutTheResetDateWhenCompact() {
+        let header = text(percentLeft: 54, variant: .compact)
+
+        #expect(header.timeUntilReset == "4d 19h")
+        #expect(header.resetsAt == "until reset")
     }
 
     @Test(arguments: [(21.0, false), (20.0, true), (3.0, true)])

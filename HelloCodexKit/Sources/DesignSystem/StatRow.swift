@@ -18,15 +18,25 @@ public struct Stat: Equatable, Sendable {
     }
 }
 
-/// Stats side by side in equal columns, between two rules.
+/// Stats side by side in equal columns between two rules, or in the compact
+/// variant one per line, with the label on the left and the value on the right.
 public struct StatRow: View {
     private let stats: [Stat]
+    private let variant: Variant
 
-    public init(_ stats: [Stat]) {
+    public init(_ stats: [Stat], variant: Variant = .full) {
         self.stats = stats
+        self.variant = variant
     }
 
     public var body: some View {
+        switch variant {
+        case .full: columns
+        case .compact: lines
+        }
+    }
+
+    private var columns: some View {
         HStack(alignment: .top, spacing: 0) {
             ForEach(stats.indices, id: \.self) { index in
                 let stat = stats[index]
@@ -46,8 +56,26 @@ public struct StatRow: View {
         .overlay(alignment: .bottom) { rule }
     }
 
+    private var lines: some View {
+        VStack(spacing: 8) {
+            ForEach(stats.indices, id: \.self) { index in
+                let stat = stats[index]
+                HStack {
+                    Text(stat.label)
+                        .foregroundStyle(Theme.textSecondary)
+                    Spacer()
+                    Text(stat.value)
+                        .font(.system(size: 12, design: .monospaced))
+                        .foregroundStyle(color(of: stat.tone))
+                }
+            }
+        }
+        .font(.system(size: 12))
+        .lineLimit(1)
+    }
+
     private var rule: some View {
-        Rectangle().fill(Theme.separator).frame(height: 0.5)
+        Hairline(color: Theme.separator)
     }
 
     private func color(of tone: Stat.Tone?) -> Color {

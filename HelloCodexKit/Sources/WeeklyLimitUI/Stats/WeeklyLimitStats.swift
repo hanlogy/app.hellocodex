@@ -6,15 +6,20 @@ import WeeklyLimit
 /// lasts at this pace.
 public struct WeeklyLimitStats: View {
     private let summary: WeeklySummary
+    private let variant: Variant
 
     @Environment(\.locale) private var locale
     @Environment(\.calendar) private var calendar
 
-    public init(summary: WeeklySummary) {
+    /// The compact variant shows one stat per line.
+    public init(summary: WeeklySummary, variant: Variant = .full) {
         self.summary = summary
+        self.variant = variant
     }
 
     public var body: some View {
-        StatRow(WeeklyLimitStatsText.stats(of: summary, locale: locale, calendar: calendar))
+        StatRow(
+            WeeklyLimitStatsText.stats(of: summary, locale: locale, calendar: calendar),
+            variant: variant)
     }
 }

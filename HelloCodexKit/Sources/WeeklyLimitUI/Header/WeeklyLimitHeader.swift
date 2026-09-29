@@ -5,35 +5,43 @@ import WeeklyLimit
 /// How much of the weekly limit is left, and how long until it resets.
 public struct WeeklyLimitHeader: View {
     private let summary: WeeklySummary
+    private let variant: Variant
 
     @Environment(\.locale) private var locale
     @Environment(\.calendar) private var calendar
 
-    public init(summary: WeeklySummary) {
+    /// The compact variant has smaller type and leaves out the reset date.
+    public init(summary: WeeklySummary, variant: Variant = .full) {
         self.summary = summary
+        self.variant = variant
     }
 
     public var body: some View {
+        let isFull = variant == .full
         // Redrawn every minute, so the time until the reset keeps counting down.
         TimelineView(.everyMinute) { context in
             let text = WeeklyLimitHeaderText(
-                summary: summary, now: context.date, locale: locale, calendar: calendar)
+                summary: summary, variant: variant, now: context.date, locale: locale,
+                calendar: calendar)
             HStack(alignment: .lastTextBaseline, spacing: 24) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(text.percentLeft, kerningBetweenCharacters: -3.6)
-                        .font(.system(size: 72, weight: .light, design: .monospaced))
+                VStack(alignment: .leading, spacing: isFull ? 8 : 6) {
+                    // Letters 0.05em closer, or 0.04em in the compact variant.
+                    Text(text.percentLeft, kerningBetweenCharacters: isFull ? -3.6 : -1.52)
+                        .font(.system(size: isFull ? 72 : 38, weight: .light, design: .monospaced))
                         .foregroundStyle(text.isLow ? Theme.warning : Theme.text)
                     Text(text.caption)
-                        .font(.system(size: 13))
+                        .font(.system(size: isFull ? 13 : 11))
                         .foregroundStyle(Theme.textSecondary)
                 }
                 Spacer()
-                VStack(alignment: .trailing, spacing: 4) {
+                VStack(alignment: .trailing, spacing: isFull ? 4 : 3) {
                     Text(text.timeUntilReset)
-                        .font(.system(size: 15, weight: .medium, design: .monospaced))
+                        .font(
+                            .system(size: isFull ? 15 : 12.5, weight: .medium, design: .monospaced)
+                        )
                         .foregroundStyle(Theme.text)
                     Text(text.resetsAt)
-                        .font(.system(size: 12))
+                        .font(.system(size: isFull ? 12 : 11))
                         .foregroundStyle(Theme.textTertiary)
                 }
             }

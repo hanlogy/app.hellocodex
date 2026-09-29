@@ -35,6 +35,9 @@ public enum Theme {
     public static let barEmpty = color(.barEmpty)
     public static let track = color(.track)
 
+    /// A menu item under the pointer.
+    public static let menuHover = color(.menuHover)
+
     /// The colours' names in the asset catalog. Every property above uses one,
     /// so tests can check each exists: a missing one would silently draw
     /// nothing.
@@ -43,6 +46,7 @@ public enum Theme {
         case warning, success
         case separator, separatorStrong, separatorRow, grid
         case chartArea, pace, bar, barEmpty, track
+        case menuHover
     }
 
     private static func color(_ name: Name) -> Color {

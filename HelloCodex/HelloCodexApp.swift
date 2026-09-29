@@ -21,7 +21,7 @@ struct HelloCodexApp: App {
         .defaultSize(width: 760, height: 900)
 
         MenuBarExtra {
-            MenuBarContent()
+            MenuBarContent(weeklyLimit: services.weeklyLimit)
         } label: {
             WeeklyLimitMenuBarLabel(limit: services.weeklyLimit.limit, icon: Image("MenuBarIcon"))
         }

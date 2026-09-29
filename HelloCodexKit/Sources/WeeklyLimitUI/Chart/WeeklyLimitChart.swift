@@ -5,39 +5,64 @@ import WeeklyLimit
 
 /// Percent left over the week: the recorded readings, dashed where the app
 /// wasn't running, an even pace, and the projection, with rules, a now marker,
-/// day ticks, and a legend.
+/// day ticks, and a legend. The compact variant is only the lines, thinner.
 public struct WeeklyLimitChart: View {
     private let summary: WeeklySummary
+    private let variant: Variant
 
     @Environment(\.locale) private var locale
     @Environment(\.calendar) private var calendar
-    @Environment(\.displayScale) private var displayScale
 
-    public init(summary: WeeklySummary) {
+    public init(summary: WeeklySummary, variant: Variant = .full) {
         self.summary = summary
+        self.variant = variant
     }
 
     public var body: some View {
         let data = WeeklyLimitChartData(summary: summary, locale: locale, calendar: calendar)
-        VStack(alignment: .leading, spacing: 8) {
+        switch variant {
+        case .full:
+            VStack(alignment: .leading, spacing: 8) {
+                plot(data)
+                    .frame(height: 200)
+                    .background(rules)
+                ticks(data.ticks)
+                legend(runsOut: data.runsOut)
+                    .padding(.top, 4)
+            }
+        case .compact:
             plot(data)
-                .frame(height: 200)
-                .background(rules)
-            ticks(data.ticks)
-            legend(runsOut: data.runsOut)
-                .padding(.top, 4)
+                .frame(height: 64)
+                .overlay(alignment: .bottom) {
+                    Hairline(color: Theme.separatorStrong)
+                }
         }
+    }
+
+    private var isFull: Bool { variant == .full }
+
+    // Line styles, thinner with shorter dashes in the compact variant.
+    private var recorded: StrokeStyle { StrokeStyle(lineWidth: isFull ? 1.75 : 1.5) }
+    private var dashed: StrokeStyle {
+        isFull
+            ? StrokeStyle(lineWidth: 1.5, dash: [2, 3])
+            : StrokeStyle(lineWidth: 1.25, dash: [2, 2])
+    }
+    private var evenPace: StrokeStyle {
+        StrokeStyle(lineWidth: 1, dash: isFull ? [3, 4] : [3, 3])
     }
 
     private func plot(_ data: WeeklyLimitChartData) -> some View {
         Chart {
-            line(data.evenPace, id: "pace", style: StrokeStyle(lineWidth: 1, dash: [3, 4]))
+            line(data.evenPace, id: "pace", style: evenPace)
                 .foregroundStyle(Theme.pace)
             line(data.projection, id: "projection", style: dashed)
                 .foregroundStyle(data.runsOut ? Theme.warning : Theme.success)
-            area(data)
+            if isFull {
+                area(data)
+            }
             ForEach(data.runs.indices, id: \.self) { index in
-                line(data.runs[index], id: "run \(index)", style: StrokeStyle(lineWidth: 1.75))
+                line(data.runs[index], id: "run \(index)", style: recorded)
                     .interpolationMethod(.stepEnd)
                     .foregroundStyle(Theme.text)
             }
@@ -45,7 +70,7 @@ public struct WeeklyLimitChart: View {
                 line(data.gaps[index], id: "gap \(index)", style: dashed)
                     .foregroundStyle(Theme.text)
             }
-            if let latest = data.latest {
+            if isFull, let latest = data.latest {
                 RuleMark(x: .value("Time", latest.time))
                     .lineStyle(StrokeStyle(lineWidth: 1))
                     .foregroundStyle(Theme.separatorStrong)
@@ -65,8 +90,6 @@ public struct WeeklyLimitChart: View {
         .chartYAxis(.hidden)
         .chartLegend(.hidden)
     }
-
-    private var dashed: StrokeStyle { StrokeStyle(lineWidth: 1.5, dash: [2, 3]) }
 
     private func line(_ points: [ChartPoint], id: String, style: StrokeStyle) -> some ChartContent {
         ForEach(points.indices, id: \.self) { index in
@@ -104,14 +127,14 @@ public struct WeeklyLimitChart: View {
         GeometryReader { proxy in
             let middle = proxy.size.height / 2
             ZStack(alignment: .topLeading) {
-                Rectangle().fill(Theme.separator).frame(height: 0.5)
+                Hairline(color: Theme.separator)
                 Path { path in
                     path.move(to: CGPoint(x: 0, y: middle))
                     path.addLine(to: CGPoint(x: proxy.size.width, y: middle))
                 }
                 .stroke(Theme.grid, style: StrokeStyle(lineWidth: 0.5, dash: [2, 2]))
-                Rectangle().fill(Theme.separatorStrong).frame(height: 0.5)
-                    .offset(y: proxy.size.height - 0.5)
+                Hairline(color: Theme.separatorStrong)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
                 axisLabel("100%").offset(y: 4)
                 axisLabel("50%").offset(y: middle + 4)
             }
@@ -136,12 +159,9 @@ public struct WeeklyLimitChart: View {
                     .padding(.leading, 3)
                     .frame(height: 16)
                     .overlay(alignment: .leading) {
-                        Rectangle().fill(Theme.separatorStrong).frame(width: 0.5)
+                        Hairline(.vertical, color: Theme.separatorStrong)
                     }
-                    // On a whole pixel, or the hairline can vanish.
-                    .offset(
-                        x: (tick.fraction * proxy.size.width * displayScale).rounded()
-                            / displayScale)
+                    .offset(x: tick.fraction * proxy.size.width)
             }
         }
         .frame(height: 16)
@@ -149,10 +169,9 @@ public struct WeeklyLimitChart: View {
 
     private func legend(runsOut: Bool) -> some View {
         HStack(spacing: 18) {
-            legendItem("Recorded", swatch: StrokeStyle(lineWidth: 1.75), color: Theme.text)
+            legendItem("Recorded", swatch: recorded, color: Theme.text)
             legendItem("App not running", swatch: dashed, color: Theme.text)
-            legendItem(
-                "Even pace", swatch: StrokeStyle(lineWidth: 1, dash: [3, 4]), color: Theme.pace)
+            legendItem("Even pace", swatch: evenPace, color: Theme.pace)
             legendItem(
                 "Projection", swatch: dashed, color: runsOut ? Theme.warning : Theme.success)
         }

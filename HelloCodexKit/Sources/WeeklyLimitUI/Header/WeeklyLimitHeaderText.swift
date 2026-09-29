@@ -13,12 +13,20 @@ struct WeeklyLimitHeaderText {
     let resetsAt: String
     let isLow: Bool
 
-    init(summary: WeeklySummary, now: Date, locale: Locale, calendar: Calendar) {
+    /// The compact variant leaves out the reset date.
+    init(
+        summary: WeeklySummary, variant: Variant, now: Date, locale: Locale, calendar: Calendar
+    ) {
         percentLeft = DisplayText.percent(summary.percentLeft)
         timeUntilReset = DisplayText.duration(summary.week.resetsAt.timeIntervalSince(now))
-        resetsAt =
-            "until reset · "
-            + DisplayText.dateTime(summary.week.resetsAt, locale: locale, calendar: calendar)
+        switch variant {
+        case .full:
+            resetsAt =
+                "until reset · "
+                + DisplayText.dateTime(summary.week.resetsAt, locale: locale, calendar: calendar)
+        case .compact:
+            resetsAt = "until reset"
+        }
         isLow = summary.percentLeft <= Self.lowPercentLeft
     }
 }
