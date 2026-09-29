@@ -17,6 +17,7 @@ struct MainWindow: View {
             VStack(alignment: .leading, spacing: 32) {
                 if let summary = weeklyLimit.summary {
                     WeeklyLimitHeader(summary: summary)
+                    WeeklyLimitChart(summary: summary)
                 }
             }
             .padding(EdgeInsets(top: 20, leading: 40, bottom: 36, trailing: 40))
