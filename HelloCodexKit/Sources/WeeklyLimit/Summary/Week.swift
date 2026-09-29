@@ -7,7 +7,7 @@ public struct Week: Equatable, Sendable {
 
     static let length: TimeInterval = 7 * 24 * 60 * 60
 
-    init(endingAt resetsAt: Date) {
+    public init(endingAt resetsAt: Date) {
         self.startsAt = resetsAt.addingTimeInterval(-Self.length)
         self.resetsAt = resetsAt
     }

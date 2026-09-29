@@ -17,6 +17,28 @@ public struct WeeklySummary: Equatable, Sendable {
     public let runsOutAt: Date?
     /// The end of the projection line, which starts at the latest reading.
     public let projectionEnd: ChartPoint
+
+    public init(
+        percentLeft: Double,
+        week: Week,
+        runs: [[ChartPoint]],
+        days: [DayUsage],
+        dayGroups: [DayGroup],
+        todayIndex: Int,
+        versusEvenPace: Double,
+        runsOutAt: Date?,
+        projectionEnd: ChartPoint
+    ) {
+        self.percentLeft = percentLeft
+        self.week = week
+        self.runs = runs
+        self.days = days
+        self.dayGroups = dayGroups
+        self.todayIndex = todayIndex
+        self.versusEvenPace = versusEvenPace
+        self.runsOutAt = runsOutAt
+        self.projectionEnd = projectionEnd
+    }
 }
 
 extension WeeklySummary {

@@ -1,3 +1,4 @@
+import DesignSystem
 import SwiftUI
 import WeeklyLimit
 
@@ -16,13 +17,8 @@ public struct WeeklyLimitMenuBarLabel: View {
         HStack(spacing: 4) {
             icon
             if let limit {
-                Text(Self.text(forPercentLeft: limit.percentLeft))
+                Text(DisplayText.percent(limit.percentLeft))
             }
         }
-    }
-
-    /// "79%": what's left, to a whole percent.
-    nonisolated static func text(forPercentLeft percent: Double) -> String {
-        "\(Int(percent.rounded()))%"
     }
 }

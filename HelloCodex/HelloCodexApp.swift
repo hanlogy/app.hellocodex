@@ -14,7 +14,7 @@ struct HelloCodexApp: App {
 
     var body: some Scene {
         Window("Hello Codex", id: MainWindow.id) {
-            MainWindow()
+            MainWindow(weeklyLimit: services.weeklyLimit)
         }
         // SwiftUI restores the window's size and position itself; the default
         // size fits the design's 760 wide.
