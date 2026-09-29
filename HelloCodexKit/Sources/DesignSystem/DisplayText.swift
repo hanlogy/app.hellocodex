@@ -57,6 +57,14 @@ public enum DisplayText {
         date.formatted(style(locale, calendar).weekday(.abbreviated))
     }
 
+    /// "Fri 25", for telling apart two days with the same weekday.
+    public static func weekdayAndDay(
+        _ date: Date, locale: Locale = .autoupdatingCurrent,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> String {
+        date.formatted(style(locale, calendar).weekday(.abbreviated).day())
+    }
+
     private static func style(_ locale: Locale, _ calendar: Calendar) -> Date.FormatStyle {
         Date.FormatStyle(locale: locale, calendar: calendar, timeZone: calendar.timeZone)
     }

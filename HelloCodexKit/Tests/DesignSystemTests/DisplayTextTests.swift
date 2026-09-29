@@ -83,4 +83,11 @@ struct DisplayTextTests {
             DisplayText.weekday(local(2026, 9, 26, 12), locale: british, calendar: stockholm)
                 == "Sat")
     }
+
+    @Test(arguments: [(british, "Fri 25"), (american, "Fri 25")])
+    func namesTheWeekdayWithTheDay(locale: Locale, text: String) {
+        #expect(
+            DisplayText.weekdayAndDay(local(2026, 9, 25, 12), locale: locale, calendar: stockholm)
+                == text)
+    }
 }
