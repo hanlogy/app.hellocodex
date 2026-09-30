@@ -10,10 +10,8 @@ public enum Theme {
     public static let text = color(.text)
     /// Captions, section headings.
     public static let textSecondary = color(.textSecondary)
-    /// Labels, day ticks, the legend.
+    /// Labels, day ticks, shortcuts.
     public static let textTertiary = color(.textTertiary)
-    /// The footer.
-    public static let textQuaternary = color(.textQuaternary)
     /// Days still to come.
     public static let textPlaceholder = color(.textPlaceholder)
 
@@ -22,16 +20,14 @@ public enum Theme {
     /// Something that's fine, such as a limit lasting until the reset.
     public static let success = color(.success)
 
-    // Lines.
+    /// The chart's now line.
     public static let separatorStrong = color(.separatorStrong)
-    public static let separatorRow = color(.separatorRow)
 
     // Charts and bars.
     public static let chartArea = color(.chartArea)
     public static let pace = color(.pace)
     public static let bar = color(.bar)
     public static let barEmpty = color(.barEmpty)
-    public static let track = color(.track)
 
     /// A menu item under the pointer.
     public static let menuHover = color(.menuHover)
@@ -40,10 +36,10 @@ public enum Theme {
     /// so tests can check each exists: a missing one would silently draw
     /// nothing.
     enum Name: String, CaseIterable {
-        case background, text, textSecondary, textTertiary, textQuaternary, textPlaceholder
+        case background, text, textSecondary, textTertiary, textPlaceholder
         case warning, success
-        case separatorStrong, separatorRow
-        case chartArea, pace, bar, barEmpty, track
+        case separatorStrong
+        case chartArea, pace, bar, barEmpty
         case menuHover
     }
 

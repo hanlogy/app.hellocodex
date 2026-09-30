@@ -2,13 +2,13 @@ import Foundation
 
 /// How much of Codex's weekly limit is used, and when it resets.
 public struct WeeklyLimit: Equatable, Sendable {
-    public let limitID: String
+    let limitID: String
     /// 0–100.
-    public let usedPercent: Double
+    let usedPercent: Double
     /// nil when Codex doesn't say.
-    public let resetsAt: Date?
+    let resetsAt: Date?
 
-    public init(limitID: String, usedPercent: Double, resetsAt: Date?) {
+    init(limitID: String, usedPercent: Double, resetsAt: Date?) {
         self.limitID = limitID
         self.usedPercent = usedPercent
         self.resetsAt = resetsAt
