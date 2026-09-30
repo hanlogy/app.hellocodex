@@ -32,3 +32,18 @@ scripts/install.sh
 This builds a release signed with Developer ID, quits the installed app, moves
 it to the Trash, installs the new build in `/Applications`, and opens it. It
 needs the Developer ID Application certificate for Hanlogy AB in the keychain.
+
+## Release
+
+```sh
+scripts/release.sh
+```
+
+This builds a release signed with Developer ID and makes
+`.build/release/Hello-Codex-<version>.dmg`, notarized by Apple so it opens on
+other Macs without warnings. Notarization needs credentials saved once in the
+keychain, with an app-specific password from appleid.apple.com:
+
+```sh
+xcrun notarytool store-credentials hellocodex-notary --apple-id <Apple ID> --team-id SRHSX6M8CZ
+```

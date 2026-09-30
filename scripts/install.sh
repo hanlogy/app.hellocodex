@@ -1,26 +1,13 @@
 #!/bin/sh
 # Builds a release signed with Developer ID, quits the installed app, moves it
-# to the Trash, installs the new build in /Applications, and opens it.
+# to the Trash, installs the new build in /Applications, and opens it. For
+# your own Mac; scripts/release.sh makes the notarized download for others.
 set -eu
 cd "$(dirname "$0")/.."
 
 bundle_id=com.hanlogy.hellocodex
 installed="/Applications/Hello Codex.app"
-built=".build/release/Build/Products/Release/Hello Codex.app"
-
-# Fails unless the app has the bundle ID and a valid Developer ID signature.
-verify() {
-    id=$(plutil -extract CFBundleIdentifier raw -o - "$1/Contents/Info.plist")
-    if [ "$id" != "$bundle_id" ]; then
-        echo "error: $1 has the bundle ID $id" >&2
-        return 1
-    fi
-    codesign --verify --deep --strict "$1"
-    if ! codesign -dvv "$1" 2>&1 | grep -q '^Authority=Developer ID Application: Hanlogy AB'; then
-        echo "error: $1 isn't signed with Developer ID" >&2
-        return 1
-    fi
-}
+built=".build/release/export/Hello Codex.app"
 
 # Runs JavaScript for Automation with the installed app's path and bundle ID.
 jxa() {
@@ -45,12 +32,7 @@ installed_copies() {
         count;"
 }
 
-xcodebuild -quiet -project HelloCodex.xcodeproj -scheme HelloCodex -configuration Release \
-    -destination 'generic/platform=macOS' -derivedDataPath .build/release \
-    CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY='Developer ID Application' DEVELOPMENT_TEAM=SRHSX6M8CZ \
-    OTHER_CODE_SIGN_FLAGS=--timestamp \
-    build
-verify "$built"
+scripts/build.sh
 
 if [ "$(installed_copies quit)" -gt 0 ]; then
     tries=0
@@ -74,6 +56,6 @@ if [ -e "$installed" ]; then
 fi
 
 ditto "$built" "$installed"
-verify "$installed"
+scripts/verify.sh "$installed"
 open "$installed"
 echo "Installed and opened $installed"
