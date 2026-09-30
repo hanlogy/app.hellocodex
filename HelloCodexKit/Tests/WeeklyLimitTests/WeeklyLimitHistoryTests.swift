@@ -55,7 +55,7 @@ struct WeeklyLimitHistoryTests {
         }
     }
 
-    @Test func writesTheSameFileAndLinesAsEarlierVersions() throws {
+    @Test func writesTheExactFileNameAndLineFormat() throws {
         try withHistory { history, directory in
             let limit = WeeklyLimit(
                 limitID: "codex", usedPercent: 15,
@@ -72,9 +72,9 @@ struct WeeklyLimitHistoryTests {
         }
     }
 
-    @Test func readsLinesWrittenByEarlierVersions() throws {
+    @Test func readsLinesInAnyKeyOrderAndWithoutAResetTime() throws {
         try withHistory { _, directory in
-            // The format earlier versions wrote, including a missing reset time.
+            // Keys in another order, and a reset time that's null.
             let lines = """
                 {"recordedAt":"2026-09-28T09:16:47.791Z","limitId":"codex","usedPercent":15,"resetsAt":1791047411}
                 {"recordedAt":"2026-09-28T09:26:59.897Z","limitId":"codex","usedPercent":15.5,"resetsAt":null}

@@ -62,7 +62,7 @@ struct MonthlyRecordStoreTests {
             contents == #"{"amount":1,"recordedAt":"2026-09-28T09:00:00.000Z","zone":"a"}"# + "\n")
     }
 
-    @Test func readsTimestampsWrittenByEarlierVersions() throws {
+    @Test func readsTimestampsWithMilliseconds() throws {
         try withStore { store, directory in
             try FileManager.default.createDirectory(
                 at: directory, withIntermediateDirectories: true)

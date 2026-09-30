@@ -4,8 +4,8 @@ import Testing
 
 struct AccountFolderKeyTests {
     private let accountID = "123e4567-e89b-12d3-a456-426614174000"
-    // SHA-256 of "me@example.com", so folders match the ones earlier versions
-    // of the app created.
+    // SHA-256 of "me@example.com". The folder name must never change, or an
+    // account's readings would be left behind in its old folder.
     private let emailKey = "email-8c2a47d3bdb8d3096a6479f53eac3b724291db5f1c31611100f675be5537329d"
 
     @Test func usesTheAccountIDWhenItIsAUUID() {
