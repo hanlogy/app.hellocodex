@@ -12,7 +12,7 @@ public enum Theme {
     public static let textSecondary = color(.textSecondary)
     /// Labels, day ticks, the legend.
     public static let textTertiary = color(.textTertiary)
-    /// Axis labels, the footer.
+    /// The footer.
     public static let textQuaternary = color(.textQuaternary)
     /// Days still to come.
     public static let textPlaceholder = color(.textPlaceholder)
@@ -23,10 +23,8 @@ public enum Theme {
     public static let success = color(.success)
 
     // Lines.
-    public static let separator = color(.separator)
     public static let separatorStrong = color(.separatorStrong)
     public static let separatorRow = color(.separatorRow)
-    public static let grid = color(.grid)
 
     // Charts and bars.
     public static let chartArea = color(.chartArea)
@@ -44,7 +42,7 @@ public enum Theme {
     enum Name: String, CaseIterable {
         case background, text, textSecondary, textTertiary, textQuaternary, textPlaceholder
         case warning, success
-        case separator, separatorStrong, separatorRow, grid
+        case separatorStrong, separatorRow
         case chartArea, pace, bar, barEmpty, track
         case menuHover
     }
