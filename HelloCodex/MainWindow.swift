@@ -12,7 +12,7 @@ struct MainWindow: View {
     let weeklyLimit: WeeklyLimitMonitor
 
     var body: some View {
-        ScrollView {
+        PageScrollView {
             VStack(alignment: .leading, spacing: 32) {
                 if let summary = weeklyLimit.summary {
                     WeeklyLimitHeader(summary: summary)
