@@ -26,7 +26,7 @@ struct MenuBarContent: View {
                     WeeklyLimitStatusMessage(status: weeklyLimit.status, variant: .compact)
                         .padding(.bottom, 14)
                 }
-                Hairline(color: Theme.separator)
+                Divider()
             }
             .padding(.horizontal, 16)
             VStack(spacing: 0) {

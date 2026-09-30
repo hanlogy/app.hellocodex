@@ -52,8 +52,8 @@ public struct StatRow: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .overlay(alignment: .top) { rule }
-        .overlay(alignment: .bottom) { rule }
+        .overlay(alignment: .top) { Divider() }
+        .overlay(alignment: .bottom) { Divider() }
     }
 
     private var lines: some View {
@@ -72,10 +72,6 @@ public struct StatRow: View {
         }
         .font(.system(size: 12))
         .lineLimit(1)
-    }
-
-    private var rule: some View {
-        Hairline(color: Theme.separator)
     }
 
     private func color(of tone: Stat.Tone?) -> Color {
