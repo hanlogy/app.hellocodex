@@ -19,10 +19,19 @@ public struct WeeklyLimitDailyUsage: View {
             Text("Used per day")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(Theme.textSecondary)
-            DayColumns(columns: data.columns, spacing: 8) {
-                ForEach(data.bars, id: \.firstDay) { bar in
-                    day(bar)
-                        .layoutValue(key: DayColumns.Span.self, value: bar.span)
+            Grid(horizontalSpacing: 8, verticalSpacing: 0) {
+                // One equal column per day.
+                GridRow {
+                    ForEach(0..<data.columns, id: \.self) { _ in
+                        Color.clear.frame(maxWidth: .infinity, maxHeight: 0)
+                    }
+                }
+                GridRow(alignment: .bottom) {
+                    ForEach(data.bars, id: \.firstDay) { bar in
+                        day(bar)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .gridCellColumns(bar.span)
+                    }
                 }
             }
         }
@@ -43,46 +52,5 @@ public struct WeeklyLimitDailyUsage: View {
                 .foregroundStyle(bar.isToday ? Theme.text : Theme.textTertiary)
         }
         .lineLimit(1)
-    }
-}
-
-/// Equal columns side by side, with each view spanning one or more of them.
-private struct DayColumns: Layout {
-    struct Span: LayoutValueKey {
-        static let defaultValue = 1
-    }
-
-    let columns: Int
-    let spacing: CGFloat
-
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let width = proposal.replacingUnspecifiedDimensions().width
-        let height =
-            subviews.map { subview in
-                subview.sizeThatFits(
-                    ProposedViewSize(width: self.width(of: subview, in: width), height: nil)
-                ).height
-            }.max() ?? 0
-        return CGSize(width: width, height: height)
-    }
-
-    func placeSubviews(
-        in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()
-    ) {
-        var x = bounds.minX
-        for subview in subviews {
-            let width = width(of: subview, in: bounds.width)
-            // Aligned to the bottom, like the bars.
-            subview.place(
-                at: CGPoint(x: x, y: bounds.maxY), anchor: .bottomLeading,
-                proposal: ProposedViewSize(width: width, height: nil))
-            x += width + spacing
-        }
-    }
-
-    private func width(of subview: LayoutSubview, in width: CGFloat) -> CGFloat {
-        let column = (width - spacing * CGFloat(columns - 1)) / CGFloat(columns)
-        let span = CGFloat(subview[Span.self])
-        return column * span + spacing * (span - 1)
     }
 }
