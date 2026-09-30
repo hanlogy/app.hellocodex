@@ -20,6 +20,8 @@ struct MainWindow: View {
                     WeeklyLimitChart(summary: summary)
                     WeeklyLimitStats(summary: summary)
                     WeeklyLimitDailyUsage(summary: summary)
+                } else {
+                    WeeklyLimitStatusMessage(status: weeklyLimit.status)
                 }
             }
             .padding(EdgeInsets(top: 20, leading: 40, bottom: 36, trailing: 40))

@@ -65,6 +65,7 @@ struct WeeklyLimitMonitorTests {
             #expect(
                 monitor.limit == WeeklyLimit(limitID: "codex", usedPercent: 21, resetsAt: resetsAt))
             #expect(monitor.summary?.percentLeft == 79)
+            #expect(monitor.status == .summarized)
             #expect(
                 FileManager.default.fileExists(
                     atPath: readingsFile(in: directory, account: accountID).path(
@@ -125,6 +126,27 @@ struct WeeklyLimitMonitorTests {
         }
     }
 
+    @Test func isLoadingUntilCodexAnswers() async throws {
+        let codex = FakeCodexReading(rateLimits: rateLimits())
+        try await withMonitor(codex) { monitor, _ in
+            #expect(monitor.status == .loading)
+        }
+    }
+
+    @Test func failsWhenCodexCannotBeReadAndRecoversWhenItCan() async throws {
+        let codex = FakeCodexReading(rateLimits: nil)
+        try await withMonitor(codex) { monitor, _ in
+            codex.send(.connected)
+            try await eventually { monitor.status != .loading }
+            #expect(monitor.status == .failed)
+
+            await codex.answer(rateLimits())
+            codex.send(.connected)
+            try await eventually { monitor.status != .failed }
+            #expect(monitor.status == .summarized)
+        }
+    }
+
     @Test func keepsTheLastReadingWhenCodexStopsAnswering() async throws {
         let codex = FakeCodexReading(rateLimits: rateLimits(used: 21))
         try await withMonitor(codex) { monitor, _ in
@@ -137,6 +159,7 @@ struct WeeklyLimitMonitorTests {
             try await Task.sleep(for: .milliseconds(100))
 
             #expect(monitor.limit?.usedPercent == 21)
+            #expect(monitor.status == .summarized)
         }
     }
 
@@ -149,6 +172,7 @@ struct WeeklyLimitMonitorTests {
 
             #expect(monitor.limit == nil)
             #expect(monitor.summary == nil)
+            #expect(monitor.status == .noWeeklyLimit)
         }
     }
 

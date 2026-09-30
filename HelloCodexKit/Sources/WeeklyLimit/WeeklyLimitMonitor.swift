@@ -16,6 +16,19 @@ private let logger = Logger(
 @MainActor
 @Observable
 public final class WeeklyLimitMonitor {
+    /// Whether there's a week to show, and why not when there isn't.
+    public enum Status: Equatable, Sendable {
+        /// Codex hasn't answered yet.
+        case loading
+        /// ``summary`` has the week.
+        case summarized
+        /// Codex answered without a weekly limit that says when it resets.
+        case noWeeklyLimit
+        /// Codex couldn't be read, and there's no earlier reading to show.
+        case failed
+    }
+
+    public private(set) var status = Status.loading
     /// The latest reading, or nil before the first one or without a weekly
     /// limit.
     public private(set) var limit: WeeklyLimit?
@@ -135,6 +148,9 @@ public final class WeeklyLimitMonitor {
         } catch {
             // Keep showing the last reading until Codex answers again.
             logger.error("Couldn't read the rate limits: \(error)")
+            if summary == nil {
+                status = .failed
+            }
             return
         }
         let limit = WeeklyLimit(rateLimits: rateLimits)
@@ -149,6 +165,7 @@ public final class WeeklyLimitMonitor {
         }
         self.limit = limit
         summary = limit.flatMap { summarize($0, history: history, at: time) }
+        status = summary == nil ? .noWeeklyLimit : .summarized
     }
 
     /// The signed-in account's readings, or nil when Codex doesn't say who

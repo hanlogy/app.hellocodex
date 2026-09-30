@@ -14,18 +14,21 @@ struct MenuBarContent: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if let summary = weeklyLimit.summary {
-                VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                if let summary = weeklyLimit.summary {
                     WeeklyLimitHeader(summary: summary, variant: .compact)
                         .padding(.bottom, 14)
                     WeeklyLimitChart(summary: summary, variant: .compact)
                         .padding(.bottom, 16)
                     WeeklyLimitStats(summary: summary, variant: .compact)
                         .padding(.bottom, 14)
-                    Hairline(color: Theme.separator)
+                } else {
+                    WeeklyLimitStatusMessage(status: weeklyLimit.status, variant: .compact)
+                        .padding(.bottom, 14)
                 }
-                .padding(.horizontal, 16)
+                Hairline(color: Theme.separator)
             }
+            .padding(.horizontal, 16)
             VStack(spacing: 0) {
                 MenuItem("Open Hello Codex", key: "o") {
                     // The popover doesn't close by itself when another window
@@ -41,7 +44,7 @@ struct MenuBarContent: View {
             .padding(.top, 6)
             .padding(.horizontal, 6)
         }
-        .padding(.top, weeklyLimit.summary == nil ? 0 : 16)
+        .padding(.top, 16)
         .padding(.bottom, 6)
         .frame(width: 300)
         // Escape closes the popover, like a menu. It doesn't by itself.
