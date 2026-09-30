@@ -50,6 +50,22 @@ private func render(_ view: some View, scale: Double) throws -> NSBitmapImageRep
 
 @MainActor
 struct WeeklyLimitChartTests {
+    /// A hairline covers one row of pixels, on standard and Retina displays. A
+    /// one-pixel line centred on a pixel boundary covers two rows at half
+    /// strength and looks soft.
+    @Test(arguments: [1.0, 2.0])
+    func drawsTheGridLinesCrisp(scale: Double) throws {
+        let bitmap = try render(WeeklyLimitChart(summary: summary).frame(width: 680), scale: scale)
+
+        // A quarter of the way in, only the 50% grid line crosses the middle
+        // of the plot.
+        let x = Int(680 * scale / 4)
+        let rows = Int(60 * scale)..<Int(140 * scale)
+        let inked = rows.filter { (bitmap.colorAt(x: x, y: $0)?.brightnessComponent ?? 1) < 0.99 }
+
+        #expect(inked.count == 1, "The 50% grid line covers the rows \(inked)")
+    }
+
     /// Wherever the popover places the chart, which can be between pixels.
     @Test(arguments: [1.0, 2.0], [0.0, 0.25, 0.5, 0.75])
     func drawsTheCompactBaseLine(scale: Double, offset: Double) throws {

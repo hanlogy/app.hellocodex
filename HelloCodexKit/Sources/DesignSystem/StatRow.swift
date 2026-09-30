@@ -45,7 +45,8 @@ public struct StatRow: View {
                         .font(.system(size: 11.5))
                         .foregroundStyle(Theme.textTertiary)
                     Text(stat.value)
-                        .font(.system(size: 17, weight: .medium, design: .monospaced))
+                        .font(.system(size: 17, weight: .medium))
+                        .monospacedDigit()
                         .foregroundStyle(color(of: stat.tone))
                 }
                 .padding(.vertical, 14)
@@ -65,7 +66,8 @@ public struct StatRow: View {
                         .foregroundStyle(Theme.textSecondary)
                     Spacer()
                     Text(stat.value)
-                        .font(.system(size: 12, design: .monospaced))
+                        .font(.system(size: 12))
+                        .monospacedDigit()
                         .foregroundStyle(color(of: stat.tone))
                 }
             }

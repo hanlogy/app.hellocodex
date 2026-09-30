@@ -21,8 +21,14 @@ struct MainWindow: View {
                     WeeklyLimitDailyUsage(summary: summary)
                 } else {
                     WeeklyLimitStatusMessage(status: weeklyLimit.status)
+                        .frame(maxWidth: .infinity)
                 }
             }
+            // As wide as the window, whatever it shows: a scroll view is only
+            // as wide as its content, and one narrower than the window leaves
+            // the title bar with a line below it instead of its translucent
+            // edge.
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(EdgeInsets(top: 20, leading: 40, bottom: 36, trailing: 40))
         }
         .frame(minWidth: 760, minHeight: 600)

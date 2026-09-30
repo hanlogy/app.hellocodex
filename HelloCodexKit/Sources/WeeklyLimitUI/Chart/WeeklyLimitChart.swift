@@ -13,6 +13,7 @@ public struct WeeklyLimitChart: View {
 
     @Environment(\.locale) private var locale
     @Environment(\.calendar) private var calendar
+    @Environment(\.displayScale) private var displayScale
 
     public init(summary: WeeklySummary, variant: Variant = .full) {
         self.summary = summary
@@ -36,7 +37,7 @@ public struct WeeklyLimitChart: View {
             }
             if isFull, let latest = data.latest {
                 RuleMark(x: .value("Time", latest.time))
-                    .lineStyle(StrokeStyle(lineWidth: 1))
+                    .lineStyle(hairline)
                     .foregroundStyle(Theme.separatorStrong)
                 PointMark(x: .value("Time", latest.time), y: .value("Left", latest.percentLeft))
                     .symbol {
@@ -68,7 +69,7 @@ public struct WeeklyLimitChart: View {
         .chartXAxis {
             if isFull {
                 AxisMarks(values: data.ticks.map(\.time)) { value in
-                    AxisTick()
+                    AxisTick(stroke: hairline)
                     AxisValueLabel(anchor: .topLeading) {
                         if let tick = data.ticks.first(where: { $0.time == value.as(Date.self) }) {
                             Text(tick.label)
@@ -80,14 +81,17 @@ public struct WeeklyLimitChart: View {
         }
         .chartYAxis {
             AxisMarks(position: .trailing, values: isFull ? [0, 50, 100] : [0]) { value in
-                AxisGridLine()
+                // Centred in a row of pixels, not on the boundary between two,
+                // so the line is crisp.
+                AxisGridLine(stroke: hairline)
+                    .offset(y: 0.5 / displayScale)
                 if isFull, let percent = value.as(Double.self) {
                     AxisValueLabel(DisplayText.percent(percent))
                 }
             }
         }
         .chartLegend(isFull ? .visible : .hidden)
-        .chartLegend(position: .bottom, alignment: .leading)
+        .chartLegend(position: .bottom, alignment: .leading, spacing: 12)
     }
 
     /// The lines, as the legend names them.
@@ -105,6 +109,9 @@ public struct WeeklyLimitChart: View {
     }
 
     private var isFull: Bool { variant == .full }
+
+    /// One pixel wide, on any display.
+    private var hairline: StrokeStyle { StrokeStyle(lineWidth: 1 / displayScale) }
 
     // Line styles, thinner with shorter dashes in the compact variant.
     private var recorded: StrokeStyle { StrokeStyle(lineWidth: isFull ? 1.75 : 1.5) }
