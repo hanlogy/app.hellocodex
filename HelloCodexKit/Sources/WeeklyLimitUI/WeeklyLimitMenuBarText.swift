@@ -2,7 +2,7 @@ import DesignSystem
 import WeeklyLimit
 
 /// The menu bar item's text: what's left of the weekly limit, and how much of
-/// it today used, once that's at least a percent: "68% −3%".
+/// it today used, once that's at least a percent: "68% (−3%)".
 enum WeeklyLimitMenuBarText {
     /// nil until the limit is known.
     static func text(percentLeft: Double?, summary: WeeklySummary?) -> String? {
@@ -15,6 +15,8 @@ enum WeeklyLimitMenuBarText {
         else {
             return left
         }
-        return "\(left) \(WeeklyLimitText.usedChange(used))"
+        // In brackets, as a note on what's left, so it doesn't read as "68%
+        // minus 3%".
+        return "\(left) (\(WeeklyLimitText.usedChange(used)))"
     }
 }

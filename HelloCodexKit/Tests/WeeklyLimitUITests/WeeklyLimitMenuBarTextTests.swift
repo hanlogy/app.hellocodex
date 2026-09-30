@@ -43,7 +43,7 @@ struct WeeklyLimitMenuBarTextTests {
             percentLeft: 68,
             summary: summary(todayUsed: 3.2))
 
-        #expect(text == "68% \u{2212}3%")
+        #expect(text == "68% (\u{2212}3%)")
     }
 
     @Test func leavesOutTodayUntilItUsedAPercent() {
@@ -63,6 +63,6 @@ struct WeeklyLimitMenuBarTextTests {
                 DayGroup(firstDay: 2, lastDay: 2, usedPercent: nil),
             ]))
 
-        #expect(text == "68% \u{2212}13%")
+        #expect(text == "68% (\u{2212}13%)")
     }
 }
