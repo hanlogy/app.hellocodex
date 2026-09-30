@@ -13,8 +13,9 @@ struct AppServerConnectionTests {
 
         weak let released = connection
         connection = nil
-        // The process takes a moment to exit, which ends the reading task.
-        for _ in 0..<20 where released != nil {
+        // The process takes a moment to exit, which ends the reading task:
+        // over 1.5 seconds on its own, and longer while other tests run.
+        for _ in 0..<100 where released != nil {
             try await Task.sleep(for: .milliseconds(100))
         }
 
