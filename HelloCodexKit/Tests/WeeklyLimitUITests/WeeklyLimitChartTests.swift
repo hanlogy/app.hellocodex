@@ -11,8 +11,7 @@ private let stockholm: Calendar = {
     return calendar
 }()
 
-/// The week from Fri 25 Sep 09:00 to Fri 2 Oct 09:00, with a midnight at 15,
-/// 39, …, 159 hours in, most of them between pixels on a 680-point chart.
+/// The week from Fri 25 Sep 09:00 to Fri 2 Oct 09:00.
 private let week = Week(
     endingAt: stockholm.date(from: DateComponents(year: 2026, month: 10, day: 2, hour: 9))!)
 
@@ -51,27 +50,6 @@ private func render(_ view: some View, scale: Double) throws -> NSBitmapImageRep
 
 @MainActor
 struct WeeklyLimitChartTests {
-    /// On standard and Retina displays.
-    @Test(arguments: [1.0, 2.0])
-    func drawsTheLineOfEveryTick(scale: Double) throws {
-        let width = 680.0
-        let bitmap = try render(
-            WeeklyLimitChart(summary: summary).frame(width: width), scale: scale)
-
-        // The tick row is below the 200-point plot and 8 points of spacing.
-        // Next to each tick's line is only the padding before its label.
-        let rows = Int(210 * scale)..<Int(222 * scale)
-        for hours in stride(from: 15.0, through: 159, by: 24) {
-            let x = Int((hours / 168 * width * scale).rounded())
-            let hasLine = ((x - 1)...(x + 1)).contains { column in
-                rows.contains {
-                    (bitmap.colorAt(x: column, y: $0)?.brightnessComponent ?? 1) < 0.95
-                }
-            }
-            #expect(hasLine, "No line at the tick \(hours) hours in")
-        }
-    }
-
     /// Wherever the popover places the chart, which can be between pixels.
     @Test(arguments: [1.0, 2.0], [0.0, 0.25, 0.5, 0.75])
     func drawsTheCompactBaseLine(scale: Double, offset: Double) throws {

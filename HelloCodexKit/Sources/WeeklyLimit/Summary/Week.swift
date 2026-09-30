@@ -14,7 +14,7 @@ public struct Week: Equatable, Sendable {
 
     /// How far through the week `time` is, from 0 at the start to 1 at the
     /// reset.
-    public func elapsedFraction(at time: Date) -> Double {
+    func elapsedFraction(at time: Date) -> Double {
         time.timeIntervalSince(startsAt) / resetsAt.timeIntervalSince(startsAt)
     }
 

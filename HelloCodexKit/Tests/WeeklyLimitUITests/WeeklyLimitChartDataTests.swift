@@ -105,7 +105,5 @@ struct WeeklyLimitChartDataTests {
         #expect(ticks.map(\.label) == ["Sat", "Today", "Mon"])
         #expect(ticks.map(\.isToday) == [false, true, false])
         #expect(ticks.map(\.time) == [at(26, 0), at(27, 0), at(28, 0)])
-        // Sat 00:00 is 15 of the week's 168 hours in.
-        #expect(abs(ticks[0].fraction - 15.0 / 168) < 1e-9)
     }
 }

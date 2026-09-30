@@ -7,8 +7,6 @@ struct WeeklyLimitChartData {
     /// A tick at a midnight, below the chart.
     struct Tick: Equatable {
         let time: Date
-        /// How far through the week the tick is, from 0 to 1.
-        let fraction: Double
         let label: String
         let isToday: Bool
     }
@@ -52,7 +50,6 @@ struct WeeklyLimitChartData {
             let isToday = index == summary.todayIndex
             return Tick(
                 time: time,
-                fraction: week.elapsedFraction(at: time),
                 label: isToday
                     ? "Today" : DisplayText.weekday(time, locale: locale, calendar: calendar),
                 isToday: isToday)
