@@ -26,7 +26,9 @@ struct HelloCodexApp: App {
         MenuBarExtra {
             MenuBarContent(weeklyLimit: services.weeklyLimit)
         } label: {
-            WeeklyLimitMenuBarLabel(limit: services.weeklyLimit.limit, icon: Image("MenuBarIcon"))
+            WeeklyLimitMenuBarLabel(
+                limit: services.weeklyLimit.limit, summary: services.weeklyLimit.summary,
+                icon: Image("MenuBarIcon"))
         }
         .menuBarExtraStyle(.window)
     }

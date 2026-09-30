@@ -26,8 +26,7 @@ enum WeeklyLimitStatsText {
     private static func today(
         _ summary: WeeklySummary, locale: Locale, calendar: Calendar
     ) -> Stat {
-        guard let group = summary.dayGroups.first(where: { $0.lastDay == summary.todayIndex })
-        else {
+        guard let group = WeeklyLimitText.todayGroup(of: summary) else {
             return Stat(label: "Today", value: WeeklyLimitText.usedChange(0))
         }
         let labels = WeeklyLimitText.dayLabels(

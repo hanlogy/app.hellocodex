@@ -31,6 +31,12 @@ enum WeeklyLimitText {
         }
     }
 
+    /// The group that ends today: today alone, or with the earlier days the app
+    /// didn't record on.
+    static func todayGroup(of summary: WeeklySummary) -> DayGroup? {
+        summary.dayGroups.first { $0.lastDay == summary.todayIndex }
+    }
+
     /// "Tue", or "Sat 26 – Today" for days merged into one group.
     static func label(of group: DayGroup, dayLabels: [String]) -> String {
         group.firstDay == group.lastDay
