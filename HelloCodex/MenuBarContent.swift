@@ -11,6 +11,7 @@ struct MenuBarContent: View {
 
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismiss) private var dismiss
+    @FocusState private var isFocused: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -47,12 +48,17 @@ struct MenuBarContent: View {
         .padding(.top, 16)
         .padding(.bottom, 6)
         .frame(width: 300)
-        // Escape closes the popover, like a menu. It doesn't by itself.
-        .background {
-            Button("Close", action: dismiss.callAsFunction)
-                .keyboardShortcut(.cancelAction)
-                .opacity(0)
-                .accessibilityHidden(true)
+        // Escape closes the popover, like a menu. It doesn't by itself, and
+        // keys only reach a view that has focus.
+        .focusable()
+        .focusEffectDisabled()
+        .focused($isFocused)
+        .onAppear {
+            isFocused = true
+        }
+        .onKeyPress(.escape) {
+            dismiss()
+            return .handled
         }
     }
 }
